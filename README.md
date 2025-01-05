@@ -14,8 +14,8 @@ Before running this application, make sure you have the following installed on y
 
 1. Clone the repository:
 2. cd dressed-frontend
-3. run `docker build -t dressed-frontend .`
-4. run `docker run -p 3000:3000 dressed-frontend`
+3. Run `docker build -t dressed-frontend .`
+4. Run `docker run -p 3000:3000 dressed-frontend`
 5. Access the application:
 Open your browser and navigate to `http://localhost:3000`
 
