@@ -30,8 +30,8 @@ const ViewDesigns: React.FC = () => {
 
   return (
     <div className="p-4">
-      <h1 className="text-2xl mb-4">Available Designs</h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <h1 className="text-2xl font-bold mt-5 mb-10">Available Designs</h1>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-5">
         {designs.map((design) => (
           <Card key={design.id}>
             <CardContent>
@@ -42,7 +42,7 @@ const ViewDesigns: React.FC = () => {
                 <img 
                   src={design.fileUrl}
                   alt={design.title}
-                  className="w-full h-48 object-cover mt-2"
+                  className="w-1/2  object-cover mt-2"
                 />
               )}
               <Button variant="contained" className="mt-2">

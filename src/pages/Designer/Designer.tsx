@@ -1,74 +1,39 @@
 import React, { useState } from 'react';
-import { TextField, MenuItem, Button } from '@mui/material';
-import { postDesign } from '../../services/services.ts';
+import { Button } from '@mui/material';
+import AddUpdateDesignModal from '../../component/modals/addUpdateDesignModal.tsx';
 
-const categories = ['Men', 'Women', 'Boy', 'Girl', 'Unisex'];
+const Designer: React.FC = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-const PostDesign: React.FC = () => {
-  const [form, setForm] = useState({
-    title: '',
-    description: '',
-    category: '',
-  });
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+  const handleOpenModal = () => {
+    setIsModalOpen(true);
   };
 
-  const handleSubmit = async () => {
-    try {
-      const response = await postDesign(form);
-      if (response.status === 200) {
-        alert('Design posted successfully!');
-        setForm({
-          title: '',
-          description: '', 
-          category: ''
-        });
-      }
-    } catch (error) {
-      console.error('Error posting design:', error);
-      alert('Failed to post design. Please try again.');
-    }
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
   };
 
   return (
-    <div className="p-4 flex flex-col items-center justify-center max-w-2xl mx-auto">
-      <h1 className="text-2xl mb-4">Post a New Design</h1>
-      <form className="flex flex-col gap-4">
-        <TextField
-          label="Title"
-          name="title"
-          value={form.title}
-          onChange={handleChange}
-        />
-        <TextField
-          label="Description"
-          name="description"
-          value={form.description}
-          onChange={handleChange}
-          multiline
-          rows={4}
-        />
-        <TextField
-          select
-          label="Category"
-          name="category"
-          value={form.category}
-          onChange={handleChange}
+    <div className="p-4 mt-5">
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-2xl font-bold">Designer Dashboard</h1>
+        <Button 
+          variant="contained" 
+          color="primary" 
+          onClick={handleOpenModal}
         >
-          {categories.map((cat) => (
-            <MenuItem key={cat} value={cat}>
-              {cat}
-            </MenuItem>
-          ))}
-        </TextField>
-        <Button variant="contained" onClick={handleSubmit}>
-          Submit
+          Add Design
         </Button>
-      </form>
+      </div>
+
+      {/* Your existing designer page content */}
+
+      <AddUpdateDesignModal 
+        open={isModalOpen} 
+        onClose={handleCloseModal} 
+      />
     </div>
   );
 };
 
-export default PostDesign;
+export default Designer;
