@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Dialog, 
   DialogTitle, 
@@ -8,16 +8,25 @@ import {
   Button,
   MenuItem
 } from '@mui/material';
-import { postDesign } from '../../services/services.ts';
+import { postDesign, updateDesign } from '../../services/services.ts';
+
+interface Design {
+  id: number;
+  title: string;
+  description: string;
+  category: string;
+  fileUrl: string;
+}
 
 interface AddUpdateDesignModalProps {
   open: boolean;
   onClose: () => void;
+  selectedDesign?: Design;
 }
 
 const categories = ['Men', 'Women', 'Boy', 'Girl', 'Unisex'];
 
-const AddUpdateDesignModal: React.FC<AddUpdateDesignModalProps> = ({ open, onClose }) => {
+const AddUpdateDesignModal: React.FC<AddUpdateDesignModalProps> = ({ open, onClose, selectedDesign }) => {
   const [form, setForm] = useState({
     title: '',
     description: '',
@@ -25,32 +34,61 @@ const AddUpdateDesignModal: React.FC<AddUpdateDesignModalProps> = ({ open, onClo
     fileUrl: ''
   });
 
+  useEffect(() => {
+    if (selectedDesign) {
+      setForm({
+        title: selectedDesign.title,
+        description: selectedDesign.description,
+        category: selectedDesign.category,
+        fileUrl: selectedDesign.fileUrl
+      });
+    } else {
+      setForm({
+        title: '',
+        description: '',
+        category: '',
+        fileUrl: ''
+      });
+    }
+  }, [selectedDesign]);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async () => {
     try {
-      const response = await postDesign(form);
-      if (response.status === 201) {
-        alert('Design posted successfully!');
-        setForm({
-          title: '',
-          description: '',
-          category: '',
-          fileUrl: ''
-        });
-        onClose();
+      let response;
+      if (selectedDesign) {
+        response = await updateDesign(selectedDesign.id, form);
+        if (response.ok) {
+          alert('Design updated successfully!');
+        }
+      } else {
+        response = await postDesign(form);
+        if (response.status === 201) {
+          alert('Design posted successfully!');
+        }
       }
+      
+      setForm({
+        title: '',
+        description: '',
+        category: '',
+        fileUrl: ''
+      });
+      onClose();
     } catch (error) {
-      console.error('Error posting design:', error);
-      alert('Failed to post design. Please try again.');
+      console.error('Error saving design:', error);
+      alert('Failed to save design. Please try again.');
     }
   };
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
-      <DialogTitle className="text-2xl font-bold">Add New Design</DialogTitle>
+      <DialogTitle className="text-2xl font-bold">
+        {selectedDesign ? 'Update Design' : 'Add New Design'}
+      </DialogTitle>
       <DialogContent>
         <div className="flex flex-col gap-4 py-4">
           <TextField
